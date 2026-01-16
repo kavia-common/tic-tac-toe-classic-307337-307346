@@ -1,0 +1,210 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f9fafb"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".MainActivity">
+
+    <!-- Top: current player indicator -->
+    <TextView
+        android:id="@+id/playerIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:padding="14dp"
+        android:text="Player: X"
+        android:textAlignment="center"
+        android:textColor="#3b82f6"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- Spacer -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="18dp" />
+
+    <!-- Center: 3x3 grid board, kept centered via weight -->
+    <LinearLayout
+        android:id="@+id/boardContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <!-- Board wrapper provides "surface" background + consistent padding -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <!-- Use GridLayout with weights so cells are equally sized squares -->
+            <androidx.gridlayout.widget.GridLayout
+                android:id="@+id/boardGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alignmentMode="alignMargins"
+                android:columnCount="3"
+                android:rowCount="3"
+                android:useDefaultMargins="false">
+
+                <!-- Row 0 -->
+                <Button
+                    android:id="@+id/cell0"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="6dp"
+                    android:backgroundTint="#f9fafb"
+                    android:minHeight="72dp"
+                    android:text=""
+                    android:textColor="#111827"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/cell1"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="6dp"
+                    android:backgroundTint="#f9fafb"
+                    android:minHeight="72dp"
+                    android:text=""
+                    android:textColor="#111827"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/cell2"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="6dp"
+                    android:backgroundTint="#f9fafb"
+                    android:minHeight="72dp"
+                    android:text=""
+                    android:textColor="#111827"
+                    android:textSize="24sp" />
+
+                <!-- Row 1 -->
+                <Button
+                    android:id="@+id/cell3"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="6dp"
+                    android:backgroundTint="#f9fafb"
+                    android:minHeight="72dp"
+                    android:text=""
+                    android:textColor="#111827"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/cell4"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="6dp"
+                    android:backgroundTint="#f9fafb"
+                    android:minHeight="72dp"
+                    android:text=""
+                    android:textColor="#111827"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/cell5"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="6dp"
+                    android:backgroundTint="#f9fafb"
+                    android:minHeight="72dp"
+                    android:text=""
+                    android:textColor="#111827"
+                    android:textSize="24sp" />
+
+                <!-- Row 2 -->
+                <Button
+                    android:id="@+id/cell6"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="6dp"
+                    android:backgroundTint="#f9fafb"
+                    android:minHeight="72dp"
+                    android:text=""
+                    android:textColor="#111827"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/cell7"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="6dp"
+                    android:backgroundTint="#f9fafb"
+                    android:minHeight="72dp"
+                    android:text=""
+                    android:textColor="#111827"
+                    android:textSize="24sp" />
+
+                <Button
+                    android:id="@+id/cell8"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="6dp"
+                    android:backgroundTint="#f9fafb"
+                    android:minHeight="72dp"
+                    android:text=""
+                    android:textColor="#111827"
+                    android:textSize="24sp" />
+
+            </androidx.gridlayout.widget.GridLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Bottom: result banner -->
+    <TextView
+        android:id="@+id/resultBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:padding="12dp"
+        android:text="Tap a square to start"
+        android:textAlignment="center"
+        android:textColor="#64748b"
+        android:textSize="16sp" />
+
+    <!-- Spacer -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="12dp" />
+
+    <!-- Restart button -->
+    <Button
+        android:id="@+id/restartButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#3b82f6"
+        android:minHeight="52dp"
+        android:text="Restart"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+</LinearLayout>
