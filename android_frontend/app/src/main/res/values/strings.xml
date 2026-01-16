@@ -40,4 +40,20 @@
 
     <string name="scores_updated_announcement">Scores updated</string>
     <string name="scores_reset_announcement">Scores reset</string>
+
+    <!-- Game mode -->
+    <string name="mode_two_players">Mode: Two Players</string>
+    <string name="mode_computer">Mode: Computer</string>
+    <string name="mode_two_players_short">2P</string>
+    <string name="mode_computer_short">Computer</string>
+
+    <string name="player_is_x">Player: X</string>
+    <string name="player_is_o">Player: O</string>
+    <string name="computer_label">Computer</string>
+
+    <!-- Accessibility: mode controls -->
+    <string name="cd_mode_indicator">Current game mode indicator</string>
+    <string name="cd_mode_toggle">Toggle between Two Players and Computer mode</string>
+    <string name="cd_player_is_x">Select Player as X (Computer as O)</string>
+    <string name="cd_player_is_o">Select Player as O (Computer as X)</string>
 </resources>

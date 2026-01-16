@@ -1,11 +1,18 @@
 package org.example.app
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.ToggleButton
 
 class MainActivity : Activity() {
 
@@ -13,6 +20,15 @@ class MainActivity : Activity() {
     private lateinit var resultBanner: TextView
     private lateinit var restartButton: Button
     private lateinit var scoreboardButton: Button
+
+    // Mode controls (new)
+    private lateinit var modeIndicator: TextView
+    private lateinit var modeToggle: ToggleButton
+    private lateinit var symbolRadioGroup: RadioGroup
+    private lateinit var radioPlayerX: RadioButton
+    private lateinit var radioPlayerO: RadioButton
+
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     private val cellButtons: Array<Button> by lazy {
         arrayOf(
@@ -38,6 +54,12 @@ class MainActivity : Activity() {
     private var currentPlayer: Char = 'X'
     private var gameOver: Boolean = false
 
+    // Computer mode state
+    private var gameMode: GameMode = GameMode.TWO_PLAYERS
+    private var playerSymbol: Char = 'X' // in Computer mode only; persisted
+    private var aiSymbol: Char = 'O'
+    private var aiThinking: Boolean = false
+
     // Win lines for a 3x3 board: rows, columns, diagonals.
     private val winLines: Array<IntArray> = arrayOf(
         intArrayOf(0, 1, 2),
@@ -52,6 +74,38 @@ class MainActivity : Activity() {
         intArrayOf(2, 4, 6),
     )
 
+    private enum class GameMode { TWO_PLAYERS, COMPUTER }
+
+    private object SettingsPrefs {
+        const val PREFS_NAME: String = "ttt_settings"
+        const val KEY_MODE: String = "MODE" // "two_player" | "computer"
+        const val KEY_PLAYER_SYMBOL: String = "PLAYER_SYMBOL" // "X" | "O"
+
+        fun loadMode(context: Context): GameMode {
+            val p = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val raw = p.getString(KEY_MODE, "two_player") ?: "two_player"
+            return if (raw == "computer") GameMode.COMPUTER else GameMode.TWO_PLAYERS
+        }
+
+        fun saveMode(context: Context, mode: GameMode) {
+            val p = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val raw = if (mode == GameMode.COMPUTER) "computer" else "two_player"
+            p.edit().putString(KEY_MODE, raw).apply()
+        }
+
+        fun loadPlayerSymbol(context: Context): Char {
+            val p = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val raw = p.getString(KEY_PLAYER_SYMBOL, "X") ?: "X"
+            return if (raw == "O") 'O' else 'X'
+        }
+
+        fun savePlayerSymbol(context: Context, symbol: Char) {
+            val p = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val raw = if (symbol == 'O') "O" else "X"
+            p.edit().putString(KEY_PLAYER_SYMBOL, raw).apply()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -61,11 +115,43 @@ class MainActivity : Activity() {
         restartButton = findViewById(R.id.restartButton)
         scoreboardButton = findViewById(R.id.scoreboardButton)
 
+        // Mode controls
+        modeIndicator = findViewById(R.id.modeIndicator)
+        modeToggle = findViewById(R.id.modeToggle)
+        symbolRadioGroup = findViewById(R.id.symbolRadioGroup)
+        radioPlayerX = findViewById(R.id.radioPlayerX)
+        radioPlayerO = findViewById(R.id.radioPlayerO)
+
+        // Load persisted settings (default: Two Players, Player = X)
+        gameMode = SettingsPrefs.loadMode(this)
+        playerSymbol = SettingsPrefs.loadPlayerSymbol(this)
+        aiSymbol = other(playerSymbol)
+
+        // Apply loaded settings to UI
+        applySettingsToControls()
+
         // Hook up cell taps -> place a move if allowed.
         cellButtons.forEachIndexed { index, button ->
             button.setOnClickListener {
                 onCellTapped(index)
             }
+        }
+
+        // Mode toggle handler (persist + reset)
+        modeToggle.setOnCheckedChangeListener { _, isChecked ->
+            gameMode = if (isChecked) GameMode.COMPUTER else GameMode.TWO_PLAYERS
+            SettingsPrefs.saveMode(this, gameMode)
+            updateModeUi()
+            resetGame()
+        }
+
+        // Symbol selection handler (persist + reset) - only relevant for Computer mode.
+        symbolRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+            playerSymbol = if (checkedId == R.id.radioPlayerO) 'O' else 'X'
+            aiSymbol = other(playerSymbol)
+            SettingsPrefs.savePlayerSymbol(this, playerSymbol)
+            updateModeUi()
+            resetGame()
         }
 
         restartButton.setOnClickListener {
@@ -81,11 +167,45 @@ class MainActivity : Activity() {
         resetGame()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        // Prevent delayed runnables from firing after Activity is destroyed.
+        mainHandler.removeCallbacksAndMessages(null)
+    }
+
+    private fun applySettingsToControls() {
+        modeToggle.isChecked = (gameMode == GameMode.COMPUTER)
+        if (playerSymbol == 'O') {
+            radioPlayerO.isChecked = true
+        } else {
+            radioPlayerX.isChecked = true
+        }
+        updateModeUi()
+    }
+
+    private fun updateModeUi() {
+        modeIndicator.text =
+            if (gameMode == GameMode.COMPUTER) getString(R.string.mode_computer) else getString(R.string.mode_two_players)
+
+        // Only enable the symbol chooser in Computer mode (keeps UI simple).
+        symbolRadioGroup.isEnabled = (gameMode == GameMode.COMPUTER)
+        radioPlayerX.isEnabled = (gameMode == GameMode.COMPUTER)
+        radioPlayerO.isEnabled = (gameMode == GameMode.COMPUTER)
+        symbolRadioGroup.alpha = if (gameMode == GameMode.COMPUTER) 1.0f else 0.45f
+    }
+
     // PUBLIC_INTERFACE
     private fun resetGame() {
-        /** Fully resets board + UI state so a new game can start from Player X. */
+        /** Fully resets board + UI state so a new game can start based on selected mode/settings. */
+        mainHandler.removeCallbacksAndMessages(null)
+
         for (i in board.indices) board[i] = null
         gameOver = false
+        aiThinking = false
+
+        // In both modes, X always starts by rules. In computer mode, that means:
+        // - if Player is X -> Player starts
+        // - if Player is O -> Computer starts as X
         currentPlayer = 'X'
 
         val defaultTextColor = getColor(R.color.ttt_text)
@@ -104,7 +224,19 @@ class MainActivity : Activity() {
         updatePlayerIndicator()
 
         // Neutral banner prompt
-        setBannerNeutral("Tap a square to start")
+        setBannerNeutral(
+            if (gameMode == GameMode.COMPUTER) {
+                // Hint which side the user plays.
+                val user = "You: $playerSymbol"
+                val comp = "${getString(R.string.computer_label)}: $aiSymbol"
+                "Tap a square to start • $user • $comp"
+            } else {
+                "Tap a square to start"
+            },
+        )
+
+        // If computer should start, schedule AI move.
+        maybeTriggerAiTurn()
     }
 
     // PUBLIC_INTERFACE
@@ -112,13 +244,66 @@ class MainActivity : Activity() {
         /** Handles the full game flow when a cell is tapped. */
         if (gameOver) return
 
+        // In Computer mode, ignore taps during AI thinking or if it isn't the player's turn.
+        if (gameMode == GameMode.COMPUTER) {
+            if (aiThinking) return
+            if (currentPlayer != playerSymbol) return
+        }
+
         // Ignore taps on occupied squares
         if (board[index] != null) return
 
+        applyMove(index, currentPlayer)
+
+        // After a user move in computer mode, possibly trigger AI.
+        maybeTriggerAiTurn()
+    }
+
+    private fun maybeTriggerAiTurn() {
+        if (gameOver) return
+        if (gameMode != GameMode.COMPUTER) return
+        if (currentPlayer != aiSymbol) return
+
+        // Schedule AI move after a short delay for UX.
+        aiThinking = true
+        lockBoardForAiThinking()
+        setBannerNeutral("Computer is thinking…")
+
+        mainHandler.postDelayed(
+            {
+                if (gameOver) return@postDelayed
+
+                val aiMove = AiPlayer.chooseMove(board, aiSymbol)
+                Log.d("MainActivity", "AI move chosen: $aiMove for symbol=$aiSymbol")
+
+                if (aiMove == null) {
+                    // Should only happen when board is full; fall back to draw check.
+                    aiThinking = false
+                    unlockBoardAfterAiThinking()
+                    if (isDraw()) {
+                        endDraw()
+                    }
+                    return@postDelayed
+                }
+
+                applyMove(aiMove, aiSymbol)
+
+                // If game continues and it's now player's turn, re-enable board.
+                if (!gameOver) {
+                    aiThinking = false
+                    unlockBoardAfterAiThinking()
+                    setBannerNeutral("Your turn: $currentPlayer")
+                }
+            },
+            350L,
+        )
+    }
+
+    private fun applyMove(index: Int, symbol: Char) {
         // Place move
-        board[index] = currentPlayer
-        cellButtons[index].text = currentPlayer.toString()
-        applyMarkStyling(index, currentPlayer)
+        board[index] = symbol
+        cellButtons[index].text = symbol.toString()
+        applyMarkStyling(index, symbol)
 
         // Check end conditions
         val winner = findWinner()
@@ -132,30 +317,66 @@ class MainActivity : Activity() {
                 ScorePrefs.incrementOWins(this)
             }
 
-            setBannerWin("Player $winner wins!")
+            setBannerWin(
+                if (gameMode == GameMode.COMPUTER) {
+                    if (winner == playerSymbol) "You win!" else "Computer wins!"
+                } else {
+                    "Player $winner wins!"
+                },
+            )
             lockBoard()
             return
         }
 
         if (isDraw()) {
-            gameOver = true
-
-            // Persist scoreboard update (cumulative, across restarts).
-            ScorePrefs.incrementDraws(this)
-
-            setBannerDraw("It's a draw!")
-            lockBoard()
+            endDraw()
             return
         }
 
         // Continue game: swap player and update UI
-        currentPlayer = if (currentPlayer == 'X') 'O' else 'X'
+        currentPlayer = other(symbol)
         updatePlayerIndicator()
-        setBannerNeutral("Your turn: $currentPlayer")
+
+        // In 2P, keep prior behavior of prompting with current player.
+        if (gameMode == GameMode.TWO_PLAYERS) {
+            setBannerNeutral("Your turn: $currentPlayer")
+        } else {
+            // In Computer mode, we will set a "thinking" banner when AI triggers.
+            if (currentPlayer == playerSymbol) {
+                setBannerNeutral("Your turn: $currentPlayer")
+            }
+        }
+    }
+
+    private fun endDraw() {
+        gameOver = true
+
+        // Persist scoreboard update (cumulative, across restarts).
+        ScorePrefs.incrementDraws(this)
+
+        setBannerDraw("It's a draw!")
+        lockBoard()
+    }
+
+    private fun lockBoardForAiThinking() {
+        // Disable all cells while AI is thinking to prevent accidental taps.
+        cellButtons.forEach { button ->
+            button.isEnabled = false
+            button.alpha = 0.65f
+        }
+    }
+
+    private fun unlockBoardAfterAiThinking() {
+        // Re-enable only empty cells (occupied remain effectively blocked by logic).
+        cellButtons.forEachIndexed { idx, button ->
+            button.isEnabled = (board[idx] == null) && !gameOver
+            button.alpha = 1.0f
+        }
     }
 
     private fun lockBoard() {
         // Prevent further moves once game ends.
+        aiThinking = false
         cellButtons.forEach { button ->
             button.isEnabled = false
             // Disabled visuals: subtly reduce prominence while keeping legibility.
@@ -180,7 +401,15 @@ class MainActivity : Activity() {
     }
 
     private fun updatePlayerIndicator() {
-        playerIndicator.text = "Player: $currentPlayer"
+        // In Computer mode, show both whose turn (X/O) and which side.
+        playerIndicator.text =
+            if (gameMode == GameMode.COMPUTER) {
+                val owner = if (currentPlayer == playerSymbol) "You" else getString(R.string.computer_label)
+                "$owner: $currentPlayer"
+            } else {
+                "Player: $currentPlayer"
+            }
+
         // Use distinct accent per player for stronger visual guidance.
         val colorRes = if (currentPlayer == 'X') R.color.ttt_primary else R.color.ttt_success
         playerIndicator.setTextColor(getColor(colorRes))
@@ -217,4 +446,6 @@ class MainActivity : Activity() {
         button.contentDescription = "Cell $position of 9: $mark"
         button.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
     }
+
+    private fun other(symbol: Char): Char = if (symbol == 'X') 'O' else 'X'
 }

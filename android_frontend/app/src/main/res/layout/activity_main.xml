@@ -9,6 +9,77 @@
     android:padding="@dimen/ttt_screen_padding"
     tools:context=".MainActivity">
 
+    <!-- Top: mode + symbol controls -->
+    <LinearLayout
+        android:id="@+id/modeCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ttt_surface_card"
+        android:elevation="@dimen/ttt_card_elevation"
+        android:orientation="vertical"
+        android:padding="@dimen/ttt_card_padding">
+
+        <TextView
+            android:id="@+id/modeIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/mode_two_players"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.TTT.Body"
+            android:contentDescription="@string/cd_mode_indicator" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ttt_small_spacing" />
+
+        <ToggleButton
+            android:id="@+id/modeToggle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textOn="@string/mode_computer_short"
+            android:textOff="@string/mode_two_players_short"
+            android:checked="false"
+            android:contentDescription="@string/cd_mode_toggle" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ttt_small_spacing" />
+
+        <RadioGroup
+            android:id="@+id/symbolRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <RadioButton
+                android:id="@+id/radioPlayerX"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/player_is_x"
+                android:checked="true"
+                android:contentDescription="@string/cd_player_is_x" />
+
+            <Space
+                android:layout_width="@dimen/ttt_small_spacing"
+                android:layout_height="wrap_content" />
+
+            <RadioButton
+                android:id="@+id/radioPlayerO"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/player_is_o"
+                android:checked="false"
+                android:contentDescription="@string/cd_player_is_o" />
+
+        </RadioGroup>
+    </LinearLayout>
+
+    <!-- Spacer -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ttt_small_spacing" />
+
     <!-- Top: current player indicator -->
     <TextView
         android:id="@+id/playerIndicator"
