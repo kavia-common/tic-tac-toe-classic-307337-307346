@@ -1,0 +1,141 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scoreboardRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ttt_background"
+    android:orientation="vertical"
+    android:padding="@dimen/ttt_screen_padding">
+
+    <TextView
+        android:id="@+id/scoreboardTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ttt_surface_card"
+        android:elevation="@dimen/ttt_card_elevation"
+        android:padding="@dimen/ttt_card_padding"
+        android:text="@string/scoreboard_title"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.TTT.Title"
+        android:contentDescription="@string/cd_scoreboard_title" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ttt_section_spacing" />
+
+    <!-- Scores card -->
+    <LinearLayout
+        android:id="@+id/scoresCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ttt_surface_card"
+        android:elevation="@dimen/ttt_card_elevation"
+        android:orientation="vertical"
+        android:padding="@dimen/ttt_card_padding">
+
+        <!-- X wins -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/xWinsLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/x_wins_label"
+                android:textAppearance="@style/TextAppearance.TTT.Body"
+                android:contentDescription="@string/cd_x_wins_label" />
+
+            <TextView
+                android:id="@+id/xWinsValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.TTT.ScoreValue"
+                android:textColor="@color/ttt_primary"
+                android:contentDescription="@string/cd_x_wins_value" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ttt_small_spacing" />
+
+        <!-- O wins -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/oWinsLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/o_wins_label"
+                android:textAppearance="@style/TextAppearance.TTT.Body"
+                android:contentDescription="@string/cd_o_wins_label" />
+
+            <TextView
+                android:id="@+id/oWinsValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.TTT.ScoreValue"
+                android:textColor="@color/ttt_success"
+                android:contentDescription="@string/cd_o_wins_value" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ttt_small_spacing" />
+
+        <!-- Draws -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/drawsLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/draws_label"
+                android:textAppearance="@style/TextAppearance.TTT.Body"
+                android:contentDescription="@string/cd_draws_label" />
+
+            <TextView
+                android:id="@+id/drawsValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.TTT.ScoreValue"
+                android:textColor="@color/ttt_secondary"
+                android:contentDescription="@string/cd_draws_value" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ttt_section_spacing" />
+
+    <Button
+        android:id="@+id/resetScoresButton"
+        style="@style/Widget.TTT.RestartButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/reset_scores"
+        android:contentDescription="@string/cd_reset_scores" />
+
+    <!-- Hidden/live announcer region for TalkBack updates -->
+    <TextView
+        android:id="@+id/scoreboardStatusAnnouncer"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:alpha="0.0"
+        android:importantForAccessibility="yes"
+        android:accessibilityLiveRegion="polite"
+        android:text="@string/scores_updated_announcement" />
+
+</LinearLayout>

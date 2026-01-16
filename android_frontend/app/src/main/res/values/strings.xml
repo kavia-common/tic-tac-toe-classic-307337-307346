@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">Sample Declarative Gradle Android App</string>
+
+    <string name="restart">Restart</string>
+
+    <!-- Accessibility -->
+    <string name="cd_player_indicator">Current player indicator</string>
+    <string name="cd_result_banner">Game status</string>
+    <string name="cd_restart_button">Restart game</string>
+    <string name="cd_board_grid">Tic Tac Toe board</string>
+
+    <string name="cd_cell_0">Cell 1 of 9</string>
+    <string name="cd_cell_1">Cell 2 of 9</string>
+    <string name="cd_cell_2">Cell 3 of 9</string>
+    <string name="cd_cell_3">Cell 4 of 9</string>
+    <string name="cd_cell_4">Cell 5 of 9</string>
+    <string name="cd_cell_5">Cell 6 of 9</string>
+    <string name="cd_cell_6">Cell 7 of 9</string>
+    <string name="cd_cell_7">Cell 8 of 9</string>
+    <string name="cd_cell_8">Cell 9 of 9</string>
+
+    <!-- Scoreboard -->
+    <string name="view_scoreboard">Scoreboard</string>
+    <string name="scoreboard_title">Scoreboard</string>
+    <string name="x_wins_label">X wins</string>
+    <string name="o_wins_label">O wins</string>
+    <string name="draws_label">Draws</string>
+    <string name="reset_scores">Reset scores</string>
+
+    <!-- Accessibility: navigation + scoreboard -->
+    <string name="cd_view_scoreboard">View scoreboard</string>
+    <string name="cd_scoreboard_title">Scoreboard title</string>
+    <string name="cd_x_wins_label">X wins label</string>
+    <string name="cd_o_wins_label">O wins label</string>
+    <string name="cd_draws_label">Draws label</string>
+    <string name="cd_x_wins_value">X wins total</string>
+    <string name="cd_o_wins_value">O wins total</string>
+    <string name="cd_draws_value">Draws total</string>
+    <string name="cd_reset_scores">Reset scoreboard totals</string>
+
+    <string name="scores_updated_announcement">Scores updated</string>
+    <string name="scores_reset_announcement">Scores reset</string>
+</resources>

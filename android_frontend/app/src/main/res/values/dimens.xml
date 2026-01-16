@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Layout spacing -->
+    <dimen name="ttt_screen_padding">20dp</dimen>
+    <dimen name="ttt_section_spacing">16dp</dimen>
+    <dimen name="ttt_small_spacing">12dp</dimen>
+
+    <!-- Cards -->
+    <dimen name="ttt_card_radius">16dp</dimen>
+    <dimen name="ttt_card_padding">14dp</dimen>
+    <dimen name="ttt_card_elevation">2dp</dimen>
+
+    <!-- Board/grid -->
+    <dimen name="ttt_board_padding">12dp</dimen>
+    <dimen name="ttt_cell_margin">8dp</dimen>
+    <dimen name="ttt_cell_radius">14dp</dimen>
+    <dimen name="ttt_cell_min_size">72dp</dimen>
+    <dimen name="ttt_touch_target_min">48dp</dimen>
+
+    <!-- Typography -->
+    <dimen name="ttt_text_title">18sp</dimen>
+    <dimen name="ttt_text_body">16sp</dimen>
+    <dimen name="ttt_text_cell">28sp</dimen>
+
+    <!-- Buttons -->
+    <dimen name="ttt_button_height">52dp</dimen>
+</resources>

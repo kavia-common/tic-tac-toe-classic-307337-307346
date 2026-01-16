@@ -1,0 +1,255 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ttt_background"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="@dimen/ttt_screen_padding"
+    tools:context=".MainActivity">
+
+    <!-- Top: current player indicator -->
+    <TextView
+        android:id="@+id/playerIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ttt_surface_card"
+        android:elevation="@dimen/ttt_card_elevation"
+        android:padding="@dimen/ttt_card_padding"
+        android:text="Player: X"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.TTT.Title"
+        android:contentDescription="@string/cd_player_indicator" />
+
+    <!-- Spacer -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ttt_section_spacing" />
+
+    <!-- Center: 3x3 grid board, kept centered via weight -->
+    <LinearLayout
+        android:id="@+id/boardContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <!-- Board wrapper provides "surface" background + consistent padding -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ttt_surface_card"
+            android:elevation="@dimen/ttt_card_elevation"
+            android:orientation="vertical"
+            android:padding="@dimen/ttt_board_padding">
+
+            <androidx.gridlayout.widget.GridLayout
+                android:id="@+id/boardGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alignmentMode="alignMargins"
+                android:columnCount="3"
+                android:rowCount="3"
+                android:useDefaultMargins="false"
+                android:contentDescription="@string/cd_board_grid">
+
+                <!-- Row 0 -->
+                <Button
+                    android:id="@+id/cell0"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="@dimen/ttt_cell_margin"
+                    android:background="@drawable/ttt_cell_bg"
+                    android:minHeight="@dimen/ttt_cell_min_size"
+                    android:minWidth="@dimen/ttt_touch_target_min"
+                    android:text=""
+                    android:textColor="@color/ttt_text"
+                    android:textSize="@dimen/ttt_text_cell"
+                    android:textStyle="bold"
+                    android:contentDescription="@string/cd_cell_0" />
+
+                <Button
+                    android:id="@+id/cell1"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="@dimen/ttt_cell_margin"
+                    android:background="@drawable/ttt_cell_bg"
+                    android:minHeight="@dimen/ttt_cell_min_size"
+                    android:minWidth="@dimen/ttt_touch_target_min"
+                    android:text=""
+                    android:textColor="@color/ttt_text"
+                    android:textSize="@dimen/ttt_text_cell"
+                    android:textStyle="bold"
+                    android:contentDescription="@string/cd_cell_1" />
+
+                <Button
+                    android:id="@+id/cell2"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="@dimen/ttt_cell_margin"
+                    android:background="@drawable/ttt_cell_bg"
+                    android:minHeight="@dimen/ttt_cell_min_size"
+                    android:minWidth="@dimen/ttt_touch_target_min"
+                    android:text=""
+                    android:textColor="@color/ttt_text"
+                    android:textSize="@dimen/ttt_text_cell"
+                    android:textStyle="bold"
+                    android:contentDescription="@string/cd_cell_2" />
+
+                <!-- Row 1 -->
+                <Button
+                    android:id="@+id/cell3"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="@dimen/ttt_cell_margin"
+                    android:background="@drawable/ttt_cell_bg"
+                    android:minHeight="@dimen/ttt_cell_min_size"
+                    android:minWidth="@dimen/ttt_touch_target_min"
+                    android:text=""
+                    android:textColor="@color/ttt_text"
+                    android:textSize="@dimen/ttt_text_cell"
+                    android:textStyle="bold"
+                    android:contentDescription="@string/cd_cell_3" />
+
+                <Button
+                    android:id="@+id/cell4"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="@dimen/ttt_cell_margin"
+                    android:background="@drawable/ttt_cell_bg"
+                    android:minHeight="@dimen/ttt_cell_min_size"
+                    android:minWidth="@dimen/ttt_touch_target_min"
+                    android:text=""
+                    android:textColor="@color/ttt_text"
+                    android:textSize="@dimen/ttt_text_cell"
+                    android:textStyle="bold"
+                    android:contentDescription="@string/cd_cell_4" />
+
+                <Button
+                    android:id="@+id/cell5"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="@dimen/ttt_cell_margin"
+                    android:background="@drawable/ttt_cell_bg"
+                    android:minHeight="@dimen/ttt_cell_min_size"
+                    android:minWidth="@dimen/ttt_touch_target_min"
+                    android:text=""
+                    android:textColor="@color/ttt_text"
+                    android:textSize="@dimen/ttt_text_cell"
+                    android:textStyle="bold"
+                    android:contentDescription="@string/cd_cell_5" />
+
+                <!-- Row 2 -->
+                <Button
+                    android:id="@+id/cell6"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="@dimen/ttt_cell_margin"
+                    android:background="@drawable/ttt_cell_bg"
+                    android:minHeight="@dimen/ttt_cell_min_size"
+                    android:minWidth="@dimen/ttt_touch_target_min"
+                    android:text=""
+                    android:textColor="@color/ttt_text"
+                    android:textSize="@dimen/ttt_text_cell"
+                    android:textStyle="bold"
+                    android:contentDescription="@string/cd_cell_6" />
+
+                <Button
+                    android:id="@+id/cell7"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="@dimen/ttt_cell_margin"
+                    android:background="@drawable/ttt_cell_bg"
+                    android:minHeight="@dimen/ttt_cell_min_size"
+                    android:minWidth="@dimen/ttt_touch_target_min"
+                    android:text=""
+                    android:textColor="@color/ttt_text"
+                    android:textSize="@dimen/ttt_text_cell"
+                    android:textStyle="bold"
+                    android:contentDescription="@string/cd_cell_7" />
+
+                <Button
+                    android:id="@+id/cell8"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_margin="@dimen/ttt_cell_margin"
+                    android:background="@drawable/ttt_cell_bg"
+                    android:minHeight="@dimen/ttt_cell_min_size"
+                    android:minWidth="@dimen/ttt_touch_target_min"
+                    android:text=""
+                    android:textColor="@color/ttt_text"
+                    android:textSize="@dimen/ttt_text_cell"
+                    android:textStyle="bold"
+                    android:contentDescription="@string/cd_cell_8" />
+
+            </androidx.gridlayout.widget.GridLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Spacer -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ttt_section_spacing" />
+
+    <!-- Bottom: result banner -->
+    <TextView
+        android:id="@+id/resultBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ttt_surface_card"
+        android:elevation="@dimen/ttt_card_elevation"
+        android:padding="@dimen/ttt_card_padding"
+        android:text="Tap a square to start"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.TTT.Body"
+        android:contentDescription="@string/cd_result_banner" />
+
+    <!-- Spacer -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ttt_small_spacing" />
+
+    <!-- Restart button -->
+    <Button
+        android:id="@+id/restartButton"
+        style="@style/Widget.TTT.RestartButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/restart"
+        android:contentDescription="@string/cd_restart_button" />
+
+    <!-- Spacer -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ttt_small_spacing" />
+
+    <!-- Scoreboard navigation -->
+    <Button
+        android:id="@+id/scoreboardButton"
+        style="@style/Widget.TTT.SecondaryButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/view_scoreboard"
+        android:contentDescription="@string/cd_view_scoreboard" />
+
+</LinearLayout>
