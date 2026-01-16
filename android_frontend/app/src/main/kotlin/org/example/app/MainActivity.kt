@@ -28,6 +28,13 @@ class MainActivity : Activity() {
     private lateinit var radioPlayerX: RadioButton
     private lateinit var radioPlayerO: RadioButton
 
+    // Card Match UI
+    private lateinit var cardMatchView: CardMatchView
+    private lateinit var cardMatchMoves: TextView
+    private lateinit var cardMatchPairs: TextView
+    private lateinit var restartCardGameButton: Button
+    private lateinit var cardMatchAnnouncer: TextView
+
     private val mainHandler = Handler(Looper.getMainLooper())
 
     private val cellButtons: Array<Button> by lazy {
@@ -122,6 +129,13 @@ class MainActivity : Activity() {
         radioPlayerX = findViewById(R.id.radioPlayerX)
         radioPlayerO = findViewById(R.id.radioPlayerO)
 
+        // Card Match controls
+        cardMatchView = findViewById(R.id.cardMatchView)
+        cardMatchMoves = findViewById(R.id.cardMatchMoves)
+        cardMatchPairs = findViewById(R.id.cardMatchPairs)
+        restartCardGameButton = findViewById(R.id.restartCardGameButton)
+        cardMatchAnnouncer = findViewById(R.id.cardMatchAnnouncer)
+
         // Load persisted settings (default: Two Players, Player = X)
         gameMode = SettingsPrefs.loadMode(this)
         playerSymbol = SettingsPrefs.loadPlayerSymbol(this)
@@ -163,8 +177,62 @@ class MainActivity : Activity() {
             startActivity(Intent(this, ScoreboardActivity::class.java))
         }
 
-        // Initial UI state
+        // Card Match wiring (keeps MainActivity minimal).
+        cardMatchView.setOnMetricsChangedListener { moves, matchedPairs, totalPairs ->
+            cardMatchMoves.text = "Moves: $moves"
+            cardMatchPairs.text = "Pairs: $matchedPairs/$totalPairs"
+        }
+        cardMatchView.setOnAnnounceListener { msg ->
+            cardMatchAnnouncer.text = msg
+            cardMatchAnnouncer.announceForAccessibility(msg)
+        }
+        restartCardGameButton.setOnClickListener {
+            cardMatchView.restartGame()
+        }
+
+        // Restore Card Match state if available (configuration changes only).
+        val restoredCardState = savedInstanceState?.getBundle(KEY_CARD_MATCH_STATE)
+        if (restoredCardState != null) {
+            val values = restoredCardState.getIntArray(KEY_CM_VALUES)
+            val faceUp = restoredCardState.getBooleanArray(KEY_CM_FACE_UP)
+            val matched = restoredCardState.getBooleanArray(KEY_CM_MATCHED)
+            if (values != null && faceUp != null && matched != null) {
+                val restored = CardMatchState(
+                    values = values,
+                    faceUp = faceUp,
+                    matched = matched,
+                    moves = restoredCardState.getInt(KEY_CM_MOVES, 0),
+                    matchedPairs = restoredCardState.getInt(KEY_CM_MATCHED_PAIRS, 0),
+                    firstSelectedIndex = restoredCardState.getInt(KEY_CM_FIRST, -1),
+                    secondSelectedIndex = restoredCardState.getInt(KEY_CM_SECOND, -1),
+                )
+                cardMatchView.restoreState(restored)
+            } else {
+                cardMatchView.restartGame()
+            }
+        } else {
+            cardMatchView.restartGame()
+        }
+
+        // Initial Tic Tac Toe UI state
         resetGame()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        // Persist Card Match state across configuration changes (not across restarts).
+        val s = cardMatchView.exportState()
+        val b = Bundle().apply {
+            putIntArray(KEY_CM_VALUES, s.values)
+            putBooleanArray(KEY_CM_FACE_UP, s.faceUp)
+            putBooleanArray(KEY_CM_MATCHED, s.matched)
+            putInt(KEY_CM_MOVES, s.moves)
+            putInt(KEY_CM_MATCHED_PAIRS, s.matchedPairs)
+            putInt(KEY_CM_FIRST, s.firstSelectedIndex)
+            putInt(KEY_CM_SECOND, s.secondSelectedIndex)
+        }
+        outState.putBundle(KEY_CARD_MATCH_STATE, b)
     }
 
     override fun onDestroy() {
@@ -448,4 +516,16 @@ class MainActivity : Activity() {
     }
 
     private fun other(symbol: Char): Char = if (symbol == 'X') 'O' else 'X'
+
+    private companion object {
+        private const val KEY_CARD_MATCH_STATE = "card_match_state"
+
+        private const val KEY_CM_VALUES = "cm_values"
+        private const val KEY_CM_FACE_UP = "cm_face_up"
+        private const val KEY_CM_MATCHED = "cm_matched"
+        private const val KEY_CM_MOVES = "cm_moves"
+        private const val KEY_CM_MATCHED_PAIRS = "cm_matched_pairs"
+        private const val KEY_CM_FIRST = "cm_first"
+        private const val KEY_CM_SECOND = "cm_second"
+    }
 }

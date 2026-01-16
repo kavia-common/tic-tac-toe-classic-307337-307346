@@ -56,4 +56,21 @@
     <string name="cd_mode_toggle">Toggle between Two Players and Computer mode</string>
     <string name="cd_player_is_x">Select Player as X (Computer as O)</string>
     <string name="cd_player_is_o">Select Player as O (Computer as X)</string>
+
+    <!-- Card Match (Memory) -->
+    <string name="card_match_title">Card Match</string>
+    <string name="restart_card_game">Restart Card Game</string>
+
+    <string name="card_match_moves_default">Moves: 0</string>
+    <string name="card_match_pairs_default">Pairs: 0</string>
+
+    <!-- Accessibility: Card Match section -->
+    <string name="cd_card_match_section">Card matching game section</string>
+    <string name="cd_card_match_title">Card match game title</string>
+    <string name="cd_card_match_grid">Card match grid</string>
+    <string name="cd_card_match_moves">Card match moves count</string>
+    <string name="cd_card_match_pairs">Card match matched pairs count</string>
+    <string name="cd_restart_card_game">Restart card matching game</string>
+
+    <string name="card_match_ready_announcement">Card match ready</string>
 </resources>

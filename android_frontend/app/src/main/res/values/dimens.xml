@@ -24,4 +24,9 @@
 
     <!-- Buttons -->
     <dimen name="ttt_button_height">52dp</dimen>
+
+    <!-- Card Match -->
+    <dimen name="ttt_card_match_cell_margin">6dp</dimen>
+    <dimen name="ttt_card_match_cell_min_size">56dp</dimen>
+    <dimen name="ttt_card_match_text">22sp</dimen>
 </resources>

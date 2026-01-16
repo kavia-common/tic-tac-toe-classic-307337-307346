@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Disabled/revealed-matched: emphasize success -->
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <solid android:color="#E6FFFB" />
+            <corners android:radius="@dimen/ttt_cell_radius" />
+            <stroke android:width="2dp" android:color="@color/ttt_success" />
+        </shape>
+    </item>
+
+    <!-- Default revealed -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/ttt_surface" />
+            <corners android:radius="@dimen/ttt_cell_radius" />
+            <stroke android:width="2dp" android:color="@color/ttt_primary" />
+        </shape>
+    </item>
+</selector>
