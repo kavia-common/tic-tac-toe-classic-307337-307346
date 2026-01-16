@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light theme palette (requested) -->
+    <color name="ttt_primary">#3B82F6</color>
+    <color name="ttt_success">#06B6D4</color>
+    <color name="ttt_error">#EF4444</color>
+
+    <color name="ttt_text">#111827</color>
+    <color name="ttt_surface">#FFFFFF</color>
+    <color name="ttt_background">#F9FAFB</color>
+
+    <!-- Supporting colors -->
+    <color name="ttt_secondary">#64748B</color>
+    <color name="ttt_border">#E5E7EB</color>
+
+    <!-- Banner tints -->
+    <color name="ttt_banner_neutral_bg">#FFFFFF</color>
+    <color name="ttt_banner_win_bg">#E6FFFB</color> <!-- success tint -->
+    <color name="ttt_banner_draw_bg">#F1F5F9</color> <!-- slate tint -->
+</resources>

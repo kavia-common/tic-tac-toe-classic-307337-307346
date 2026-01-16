@@ -2,6 +2,7 @@ package org.example.app
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 
@@ -79,12 +80,17 @@ class MainActivity : Activity() {
         gameOver = false
         currentPlayer = 'X'
 
+        val defaultTextColor = getColor(R.color.ttt_text)
+
         // Clear and (re)enable all cells.
         cellButtons.forEach { button ->
             button.text = ""
             button.isEnabled = true
-            // Restore default text color in case we set banner colors after win/draw.
-            button.setTextColor(0xFF111827.toInt()) // text (#111827)
+            button.alpha = 1.0f
+            button.setTextColor(defaultTextColor)
+            // Ensure touch target is respected and looks consistent even on older devices.
+            button.minHeight = resources.getDimensionPixelSize(R.dimen.ttt_touch_target_min)
+            button.minWidth = resources.getDimensionPixelSize(R.dimen.ttt_touch_target_min)
         }
 
         updatePlayerIndicator()
@@ -104,6 +110,7 @@ class MainActivity : Activity() {
         // Place move
         board[index] = currentPlayer
         cellButtons[index].text = currentPlayer.toString()
+        applyMarkStyling(index, currentPlayer)
 
         // Check end conditions
         val winner = findWinner()
@@ -129,7 +136,11 @@ class MainActivity : Activity() {
 
     private fun lockBoard() {
         // Prevent further moves once game ends.
-        cellButtons.forEach { it.isEnabled = false }
+        cellButtons.forEach { button ->
+            button.isEnabled = false
+            // Disabled visuals: subtly reduce prominence while keeping legibility.
+            button.alpha = 0.55f
+        }
         // Player indicator can remain showing whose turn it would have been; we keep it as-is.
     }
 
@@ -150,25 +161,40 @@ class MainActivity : Activity() {
 
     private fun updatePlayerIndicator() {
         playerIndicator.text = "Player: $currentPlayer"
-        // primary (#3b82f6)
-        playerIndicator.setTextColor(0xFF3B82F6.toInt())
+        // Use distinct accent per player for stronger visual guidance.
+        val colorRes = if (currentPlayer == 'X') R.color.ttt_primary else R.color.ttt_success
+        playerIndicator.setTextColor(getColor(colorRes))
     }
 
     private fun setBannerNeutral(message: String) {
         resultBanner.text = message
-        // secondary (#64748b)
-        resultBanner.setTextColor(0xFF64748B.toInt())
+        resultBanner.setTextColor(getColor(R.color.ttt_secondary))
+        // Announce updates for accessibility services.
+        resultBanner.announceForAccessibility(message)
     }
 
     private fun setBannerWin(message: String) {
         resultBanner.text = message
-        // error-ish / strong attention (#EF4444)
-        resultBanner.setTextColor(0xFFEF4444.toInt())
+        // Win = success accent (requested)
+        resultBanner.setTextColor(getColor(R.color.ttt_success))
+        resultBanner.announceForAccessibility(message)
     }
 
     private fun setBannerDraw(message: String) {
         resultBanner.text = message
-        // success/teal accent (#06b6d4)
-        resultBanner.setTextColor(0xFF06B6D4.toInt())
+        // Draw = secondary
+        resultBanner.setTextColor(getColor(R.color.ttt_secondary))
+        resultBanner.announceForAccessibility(message)
+    }
+
+    private fun applyMarkStyling(index: Int, mark: Char) {
+        val button = cellButtons[index]
+        val colorRes = if (mark == 'X') R.color.ttt_primary else R.color.ttt_success
+        button.setTextColor(getColor(colorRes))
+
+        // Also update contentDescription so TalkBack reads the state of the cell.
+        val position = index + 1
+        button.contentDescription = "Cell $position of 9: $mark"
+        button.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
     }
 }
