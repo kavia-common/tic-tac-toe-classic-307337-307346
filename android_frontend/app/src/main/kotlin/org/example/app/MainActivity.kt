@@ -1,6 +1,7 @@
 package org.example.app
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -11,6 +12,7 @@ class MainActivity : Activity() {
     private lateinit var playerIndicator: TextView
     private lateinit var resultBanner: TextView
     private lateinit var restartButton: Button
+    private lateinit var scoreboardButton: Button
 
     private val cellButtons: Array<Button> by lazy {
         arrayOf(
@@ -57,6 +59,7 @@ class MainActivity : Activity() {
         playerIndicator = findViewById(R.id.playerIndicator)
         resultBanner = findViewById(R.id.resultBanner)
         restartButton = findViewById(R.id.restartButton)
+        scoreboardButton = findViewById(R.id.scoreboardButton)
 
         // Hook up cell taps -> place a move if allowed.
         cellButtons.forEachIndexed { index, button ->
@@ -67,6 +70,11 @@ class MainActivity : Activity() {
 
         restartButton.setOnClickListener {
             resetGame()
+        }
+
+        scoreboardButton.setOnClickListener {
+            // Navigate to scoreboard dashboard.
+            startActivity(Intent(this, ScoreboardActivity::class.java))
         }
 
         // Initial UI state
@@ -116,6 +124,14 @@ class MainActivity : Activity() {
         val winner = findWinner()
         if (winner != null) {
             gameOver = true
+
+            // Persist scoreboard update (cumulative, across restarts).
+            if (winner == 'X') {
+                ScorePrefs.incrementXWins(this)
+            } else {
+                ScorePrefs.incrementOWins(this)
+            }
+
             setBannerWin("Player $winner wins!")
             lockBoard()
             return
@@ -123,6 +139,10 @@ class MainActivity : Activity() {
 
         if (isDraw()) {
             gameOver = true
+
+            // Persist scoreboard update (cumulative, across restarts).
+            ScorePrefs.incrementDraws(this)
+
             setBannerDraw("It's a draw!")
             lockBoard()
             return

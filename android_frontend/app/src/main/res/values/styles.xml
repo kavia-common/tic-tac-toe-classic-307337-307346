@@ -23,4 +23,20 @@
         <item name="android:paddingRight">@dimen/ttt_card_padding</item>
     </style>
 
+    <style name="Widget.TTT.SecondaryButton" parent="@android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/ttt_surface_card</item>
+        <item name="android:textColor">@color/ttt_text</item>
+        <item name="android:textSize">@dimen/ttt_text_body</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:minHeight">@dimen/ttt_button_height</item>
+        <item name="android:paddingLeft">@dimen/ttt_card_padding</item>
+        <item name="android:paddingRight">@dimen/ttt_card_padding</item>
+    </style>
+
+    <style name="TextAppearance.TTT.ScoreValue" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">@dimen/ttt_text_title</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ttt_text</item>
+    </style>
+
 </resources>

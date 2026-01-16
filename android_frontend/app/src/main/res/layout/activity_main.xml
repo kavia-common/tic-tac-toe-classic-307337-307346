@@ -238,4 +238,18 @@
         android:text="@string/restart"
         android:contentDescription="@string/cd_restart_button" />
 
+    <!-- Spacer -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ttt_small_spacing" />
+
+    <!-- Scoreboard navigation -->
+    <Button
+        android:id="@+id/scoreboardButton"
+        style="@style/Widget.TTT.SecondaryButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/view_scoreboard"
+        android:contentDescription="@string/cd_view_scoreboard" />
+
 </LinearLayout>
