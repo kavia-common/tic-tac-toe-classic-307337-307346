@@ -57,6 +57,19 @@
     <string name="cd_player_is_x">Select Player as X (Computer as O)</string>
     <string name="cd_player_is_o">Select Player as O (Computer as X)</string>
 
+    <!-- Difficulty -->
+    <string name="difficulty_label">Difficulty</string>
+    <string name="difficulty_easy">Easy</string>
+    <string name="difficulty_medium">Medium</string>
+    <string name="difficulty_hard">Hard</string>
+
+    <!-- Accessibility: difficulty controls -->
+    <string name="cd_difficulty_label">AI difficulty label</string>
+    <string name="cd_difficulty_selector">AI difficulty selector</string>
+    <string name="cd_difficulty_easy">Select easy difficulty (random moves)</string>
+    <string name="cd_difficulty_medium">Select medium difficulty (mix of random and optimal moves)</string>
+    <string name="cd_difficulty_hard">Select hard difficulty (optimal moves)</string>
+
     <!-- Card Match (Memory) -->
     <string name="card_match_title">Card Match</string>
     <string name="restart_card_game">Restart Card Game</string>

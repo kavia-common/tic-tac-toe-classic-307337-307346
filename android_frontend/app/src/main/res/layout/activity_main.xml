@@ -79,6 +79,66 @@
                     android:text="@string/player_is_o" />
 
             </RadioGroup>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/ttt_small_spacing" />
+
+            <!-- Difficulty controls (Computer mode AI only) -->
+            <TextView
+                android:id="@+id/difficultyLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/difficulty_label"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.TTT.Body"
+                android:contentDescription="@string/cd_difficulty_label" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/ttt_small_spacing" />
+
+            <RadioGroup
+                android:id="@+id/difficultyRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:contentDescription="@string/cd_difficulty_selector">
+
+                <RadioButton
+                    android:id="@+id/radioDifficultyEasy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="@string/difficulty_easy"
+                    android:contentDescription="@string/cd_difficulty_easy" />
+
+                <Space
+                    android:layout_width="@dimen/ttt_small_spacing"
+                    android:layout_height="wrap_content" />
+
+                <RadioButton
+                    android:id="@+id/radioDifficultyMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/difficulty_medium"
+                    android:contentDescription="@string/cd_difficulty_medium" />
+
+                <Space
+                    android:layout_width="@dimen/ttt_small_spacing"
+                    android:layout_height="wrap_content" />
+
+                <RadioButton
+                    android:id="@+id/radioDifficultyHard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="@string/difficulty_hard"
+                    android:contentDescription="@string/cd_difficulty_hard" />
+
+            </RadioGroup>
         </LinearLayout>
 
         <!-- Spacer -->

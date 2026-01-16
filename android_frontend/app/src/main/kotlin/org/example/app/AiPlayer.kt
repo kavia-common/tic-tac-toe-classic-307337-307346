@@ -1,6 +1,7 @@
 package org.example.app
 
 import android.util.Log
+import kotlin.random.Random
 
 /**
  * Provides move selection for a 3x3 Tic Tac Toe board.
@@ -13,6 +14,15 @@ import android.util.Log
 internal object AiPlayer {
 
     private const val TAG = "AiPlayer"
+
+    /**
+     * Difficulty levels for Computer mode AI.
+     */
+    internal enum class Difficulty {
+        EASY,
+        MEDIUM,
+        HARD,
+    }
 
     // Win lines for a 3x3 board: rows, columns, diagonals.
     private val winLines: Array<IntArray> = arrayOf(
@@ -72,6 +82,49 @@ internal object AiPlayer {
 
         Log.d(TAG, "chooseMove(ai=$aiSymbol) -> $bestMove (score=$bestScore)")
         return bestMove
+    }
+
+    /**
+     * PUBLIC_INTERFACE
+     *
+     * Choose a move using a [difficulty] policy:
+     * - EASY: random available move.
+     * - MEDIUM: 50% random, 50% minimax best.
+     * - HARD: minimax best (same as [chooseMove]).
+     *
+     * @param board Current board state. Must be length 9. null means empty.
+     * @param aiSymbol The symbol the AI will place ('X' or 'O').
+     * @param difficulty AI difficulty policy.
+     * @return An empty cell index (0..8), or null if there are no available moves.
+     */
+    // PUBLIC_INTERFACE
+    fun chooseMove(
+        board: Array<Char?>,
+        aiSymbol: Char,
+        difficulty: Difficulty,
+    ): Int? {
+        require(board.size == 9) { "board must be size 9" }
+        require(aiSymbol == 'X' || aiSymbol == 'O') { "aiSymbol must be X or O" }
+
+        val available = availableMoves(board)
+        if (available.isEmpty()) return null
+
+        val move = when (difficulty) {
+            Difficulty.EASY -> chooseRandomMove(available)
+            Difficulty.MEDIUM -> {
+                // 50% random / 50% best
+                if (Random.nextBoolean()) chooseRandomMove(available) else chooseMove(board, aiSymbol)
+            }
+            Difficulty.HARD -> chooseMove(board, aiSymbol)
+        }
+
+        Log.d(TAG, "chooseMove(ai=$aiSymbol,difficulty=$difficulty) -> $move")
+        return move
+    }
+
+    private fun chooseRandomMove(availableMoves: List<Int>): Int {
+        // Kotlin Random is fine here; no need for cryptographic strength.
+        return availableMoves[Random.nextInt(availableMoves.size)]
     }
 
     private fun minimax(

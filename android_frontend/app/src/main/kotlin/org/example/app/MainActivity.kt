@@ -21,12 +21,19 @@ class MainActivity : Activity() {
     private lateinit var restartButton: Button
     private lateinit var scoreboardButton: Button
 
-    // Mode controls (new)
+    // Mode controls
     private lateinit var modeIndicator: TextView
     private lateinit var modeToggle: ToggleButton
     private lateinit var symbolRadioGroup: RadioGroup
     private lateinit var radioPlayerX: RadioButton
     private lateinit var radioPlayerO: RadioButton
+
+    // Difficulty controls
+    private lateinit var difficultyLabel: TextView
+    private lateinit var difficultyRadioGroup: RadioGroup
+    private lateinit var radioDifficultyEasy: RadioButton
+    private lateinit var radioDifficultyMedium: RadioButton
+    private lateinit var radioDifficultyHard: RadioButton
 
     // Card Match UI
     private lateinit var cardMatchView: CardMatchView
@@ -67,6 +74,8 @@ class MainActivity : Activity() {
     private var aiSymbol: Char = 'O'
     private var aiThinking: Boolean = false
 
+    private var aiDifficulty: AiPlayer.Difficulty = AiPlayer.Difficulty.MEDIUM
+
     // Win lines for a 3x3 board: rows, columns, diagonals.
     private val winLines: Array<IntArray> = arrayOf(
         intArrayOf(0, 1, 2),
@@ -87,6 +96,7 @@ class MainActivity : Activity() {
         const val PREFS_NAME: String = "ttt_settings"
         const val KEY_MODE: String = "MODE" // "two_player" | "computer"
         const val KEY_PLAYER_SYMBOL: String = "PLAYER_SYMBOL" // "X" | "O"
+        const val KEY_AI_DIFFICULTY: String = "AI_DIFFICULTY" // "easy" | "medium" | "hard"
 
         fun loadMode(context: Context): GameMode {
             val p = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -111,6 +121,26 @@ class MainActivity : Activity() {
             val raw = if (symbol == 'O') "O" else "X"
             p.edit().putString(KEY_PLAYER_SYMBOL, raw).apply()
         }
+
+        fun loadDifficulty(context: Context): AiPlayer.Difficulty {
+            val p = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val raw = p.getString(KEY_AI_DIFFICULTY, "medium") ?: "medium"
+            return when (raw) {
+                "easy" -> AiPlayer.Difficulty.EASY
+                "hard" -> AiPlayer.Difficulty.HARD
+                else -> AiPlayer.Difficulty.MEDIUM
+            }
+        }
+
+        fun saveDifficulty(context: Context, difficulty: AiPlayer.Difficulty) {
+            val p = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val raw = when (difficulty) {
+                AiPlayer.Difficulty.EASY -> "easy"
+                AiPlayer.Difficulty.MEDIUM -> "medium"
+                AiPlayer.Difficulty.HARD -> "hard"
+            }
+            p.edit().putString(KEY_AI_DIFFICULTY, raw).apply()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,6 +159,13 @@ class MainActivity : Activity() {
         radioPlayerX = findViewById(R.id.radioPlayerX)
         radioPlayerO = findViewById(R.id.radioPlayerO)
 
+        // Difficulty controls
+        difficultyLabel = findViewById(R.id.difficultyLabel)
+        difficultyRadioGroup = findViewById(R.id.difficultyRadioGroup)
+        radioDifficultyEasy = findViewById(R.id.radioDifficultyEasy)
+        radioDifficultyMedium = findViewById(R.id.radioDifficultyMedium)
+        radioDifficultyHard = findViewById(R.id.radioDifficultyHard)
+
         // Card Match controls
         cardMatchView = findViewById(R.id.cardMatchView)
         cardMatchMoves = findViewById(R.id.cardMatchMoves)
@@ -136,10 +173,11 @@ class MainActivity : Activity() {
         restartCardGameButton = findViewById(R.id.restartCardGameButton)
         cardMatchAnnouncer = findViewById(R.id.cardMatchAnnouncer)
 
-        // Load persisted settings (default: Two Players, Player = X)
+        // Load persisted settings (default: Two Players, Player = X, Difficulty = Medium)
         gameMode = SettingsPrefs.loadMode(this)
         playerSymbol = SettingsPrefs.loadPlayerSymbol(this)
         aiSymbol = other(playerSymbol)
+        aiDifficulty = SettingsPrefs.loadDifficulty(this)
 
         // Apply loaded settings to UI
         applySettingsToControls()
@@ -164,6 +202,18 @@ class MainActivity : Activity() {
             playerSymbol = if (checkedId == R.id.radioPlayerO) 'O' else 'X'
             aiSymbol = other(playerSymbol)
             SettingsPrefs.savePlayerSymbol(this, playerSymbol)
+            updateModeUi()
+            resetGame()
+        }
+
+        // Difficulty handler (persist + reset). Only impacts Computer mode; in 2P this setting is inert.
+        difficultyRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+            aiDifficulty = when (checkedId) {
+                R.id.radioDifficultyEasy -> AiPlayer.Difficulty.EASY
+                R.id.radioDifficultyHard -> AiPlayer.Difficulty.HARD
+                else -> AiPlayer.Difficulty.MEDIUM
+            }
+            SettingsPrefs.saveDifficulty(this, aiDifficulty)
             updateModeUi()
             resetGame()
         }
@@ -243,11 +293,19 @@ class MainActivity : Activity() {
 
     private fun applySettingsToControls() {
         modeToggle.isChecked = (gameMode == GameMode.COMPUTER)
+
         if (playerSymbol == 'O') {
             radioPlayerO.isChecked = true
         } else {
             radioPlayerX.isChecked = true
         }
+
+        when (aiDifficulty) {
+            AiPlayer.Difficulty.EASY -> radioDifficultyEasy.isChecked = true
+            AiPlayer.Difficulty.MEDIUM -> radioDifficultyMedium.isChecked = true
+            AiPlayer.Difficulty.HARD -> radioDifficultyHard.isChecked = true
+        }
+
         updateModeUi()
     }
 
@@ -260,6 +318,15 @@ class MainActivity : Activity() {
         radioPlayerX.isEnabled = (gameMode == GameMode.COMPUTER)
         radioPlayerO.isEnabled = (gameMode == GameMode.COMPUTER)
         symbolRadioGroup.alpha = if (gameMode == GameMode.COMPUTER) 1.0f else 0.45f
+
+        // Difficulty selection is only relevant in Computer mode.
+        difficultyLabel.isEnabled = (gameMode == GameMode.COMPUTER)
+        difficultyRadioGroup.isEnabled = (gameMode == GameMode.COMPUTER)
+        radioDifficultyEasy.isEnabled = (gameMode == GameMode.COMPUTER)
+        radioDifficultyMedium.isEnabled = (gameMode == GameMode.COMPUTER)
+        radioDifficultyHard.isEnabled = (gameMode == GameMode.COMPUTER)
+        difficultyRadioGroup.alpha = if (gameMode == GameMode.COMPUTER) 1.0f else 0.45f
+        difficultyLabel.alpha = if (gameMode == GameMode.COMPUTER) 1.0f else 0.45f
     }
 
     // PUBLIC_INTERFACE
@@ -341,8 +408,8 @@ class MainActivity : Activity() {
             {
                 if (gameOver) return@postDelayed
 
-                val aiMove = AiPlayer.chooseMove(board, aiSymbol)
-                Log.d("MainActivity", "AI move chosen: $aiMove for symbol=$aiSymbol")
+                val aiMove = AiPlayer.chooseMove(board, aiSymbol, aiDifficulty)
+                Log.d("MainActivity", "AI move chosen: $aiMove for symbol=$aiSymbol difficulty=$aiDifficulty")
 
                 if (aiMove == null) {
                     // Should only happen when board is full; fall back to draw check.
